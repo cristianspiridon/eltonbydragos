@@ -1,6 +1,5 @@
 "use client";
 
-import Link from "next/link";
 import { useEffect, useRef } from "react";
 import { ButtonLink } from "@/components/ui/Button";
 import { siteConfig } from "@/lib/site";
@@ -90,7 +89,8 @@ export function MobileMenu({ open, onClose, active }: MobileMenuProps) {
             const isActive = active === item.href.replace("#", "");
             return (
               <li key={item.href} className="border-b border-line-soft">
-                <Link
+                {/* Native anchor, not next/link: see ButtonLink. */}
+                <a
                   href={item.href}
                   onClick={onClose}
                   aria-current={isActive ? "true" : undefined}
@@ -107,7 +107,7 @@ export function MobileMenu({ open, onClose, active }: MobileMenuProps) {
                   >
                     {item.label}
                   </span>
-                </Link>
+                </a>
               </li>
             );
           })}

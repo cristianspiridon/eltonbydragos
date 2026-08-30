@@ -1,7 +1,7 @@
 /**
  * Single source of truth for brand, contact and navigation.
  *
- * To rebrand the entire site, edit `brand` below — nothing else references the
+ * To rebrand the entire site, edit `brand` below. Nothing else references the
  * name directly. Values marked PLACEHOLDER must be replaced before launch.
  */
 
@@ -20,33 +20,35 @@ export const siteConfig = {
     name: "Dragoș",
   },
 
-  /** PLACEHOLDER — replace with the live domain. */
+  /** PLACEHOLDER. Replace with the live domain. */
   domain: "eltonliveexperience.co.uk",
   url: "https://eltonliveexperience.co.uk",
 
   contact: {
-    /** PLACEHOLDER — replace with the real booking inbox. */
-    email: "bookings@eltonliveexperience.co.uk",
-    /** PLACEHOLDER — set to a string to reveal a phone link in the footer. */
+    /** Interim inbox. Swap to a bookings@ address on the live domain later. */
+    email: "dragos.mostenescu@gmail.com",
+    /** PLACEHOLDER. Set to a string to reveal a phone link in the footer. */
     phone: null as string | null,
-    /** PLACEHOLDER — replace with the real base/travel statement. */
+    /** PLACEHOLDER. Replace with the real base/travel statement. */
     basedIn: "United Kingdom",
   },
 
+  /**
+   * Null means "no profile yet", and the link is simply not rendered. Set a
+   * URL to make it appear in the footer.
+   */
   social: {
-    /** PLACEHOLDER — replace with the real profile URL. */
-    instagram: "https://instagram.com/",
-    /** PLACEHOLDER — replace with the real profile URL. */
-    facebook: "https://facebook.com/",
+    instagram: null as string | null,
+    facebook: null as string | null,
     /** Verified from the supplied performance video. */
-    youtube: "https://www.youtube.com/@DragosMostenescu",
+    youtube: "https://www.youtube.com/@DragosMostenescu" as string | null,
   },
 
   video: {
     id: "rQxJrDgo4F4",
     /** Seconds into the video to begin playback. */
     startAt: 74,
-    title: "Tribute to Elton John — live performance",
+    title: "Tribute to Elton John, live performance",
     poster: "/video/showreel-poster.jpg",
   },
 

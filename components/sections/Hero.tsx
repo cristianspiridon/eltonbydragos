@@ -8,7 +8,7 @@ import { siteConfig } from "@/lib/site";
  * Full-viewport opening frame.
  *
  * The photograph is the only frame in the set showing hands on the keys, so it
- * carries the whole proposition — singer, pianist, costume, stage — before a
+ * carries the whole proposition (singer, pianist, costume, stage) before a
  * word is read.
  */
 export function Hero() {

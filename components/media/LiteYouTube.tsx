@@ -16,7 +16,7 @@ type LiteYouTubeProps = {
  * Click-to-load YouTube facade.
  *
  * Renders an optimised local poster frame and only injects the player iframe
- * on activation — the full embed costs ~1MB and several third-party requests,
+ * on activation. The full embed costs ~1MB and several third-party requests,
  * which would otherwise be paid by every visitor who never presses play.
  */
 export function LiteYouTube({ videoId, title, poster, startAt = 0 }: LiteYouTubeProps) {

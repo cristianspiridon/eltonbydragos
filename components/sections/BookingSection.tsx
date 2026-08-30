@@ -1,11 +1,19 @@
-import { BookingForm } from "@/components/forms/BookingForm";
+import { ButtonLink } from "@/components/ui/Button";
 import { Reveal } from "@/components/ui/Reveal";
 import { SectionLabel } from "@/components/ui/SectionLabel";
 import { bookingForm } from "@/lib/content";
-import { isBookingConfigured } from "@/lib/booking";
-import { siteConfig } from "@/lib/site";
+import { mailtoBookings, siteConfig } from "@/lib/site";
 
+/**
+ * Enquiries currently go by email rather than through the form.
+ *
+ * `components/forms/BookingForm.tsx` and `app/api/booking/route.ts` are both
+ * intact. To bring the form back, render <BookingForm /> in the right-hand
+ * column again and configure a provider as described in the README.
+ */
 export function BookingSection() {
+  const enquiryHref = `${mailtoBookings}?subject=${encodeURIComponent("Booking enquiry")}`;
+
   return (
     <section
       id="book"
@@ -13,7 +21,7 @@ export function BookingSection() {
       className="bg-ink py-20 sm:py-28 lg:py-36"
     >
       <div className="mx-auto max-w-[112rem] px-5 sm:px-8 lg:px-12">
-        <div className="grid gap-12 lg:grid-cols-12 lg:gap-16 xl:gap-24">
+        <div className="grid gap-12 lg:grid-cols-12 lg:items-start lg:gap-16 xl:gap-24">
           <div className="lg:col-span-5">
             <Reveal>
               <SectionLabel>{bookingForm.label}</SectionLabel>
@@ -39,40 +47,55 @@ export function BookingSection() {
             </Reveal>
 
             <Reveal delay={200}>
-              <div className="mt-10 space-y-6">
-                <div>
-                  <p className="eyebrow">Direct</p>
-                  <a
-                    href={`mailto:${siteConfig.contact.email}`}
-                    className="display mt-3 block break-words text-[clamp(1.15rem,2.6vw,1.75rem)] text-bone underline-offset-[6px] transition-colors hover:text-champagne-bright hover:underline"
-                  >
-                    {siteConfig.contact.email}
-                  </a>
-                  <p className="mt-2 font-sans text-[0.65rem] uppercase tracking-[0.24em] text-champagne-deep">
-                    Address to be replaced before launch
-                  </p>
-                </div>
-
-                <div>
-                  <p className="eyebrow">Based in</p>
-                  <p className="mt-3 font-sans text-[0.95rem] text-bone-muted">
-                    {siteConfig.contact.basedIn}
-                    <span className="ml-2 text-[0.65rem] uppercase tracking-[0.2em] text-champagne-deep">
-                      travel details to be supplied
-                    </span>
-                  </p>
-                </div>
+              <div className="mt-10">
+                <p className="eyebrow">Based in</p>
+                <p className="mt-3 font-sans text-[0.95rem] text-bone-muted">
+                  {siteConfig.contact.basedIn}
+                </p>
               </div>
             </Reveal>
           </div>
 
-          <Reveal delay={120} className="lg:col-span-7">
-            {!isBookingConfigured && (
-              <p className="mb-8 border-l-2 border-champagne-deep bg-champagne/5 px-5 py-3 font-sans text-[0.7rem] uppercase tracking-[0.18em] text-champagne">
-                Demo mode — connect a form provider before launch
+          <Reveal delay={120} className="lg:col-span-6 lg:col-start-7">
+            <div className="border border-line p-8 sm:p-10">
+              <p className="eyebrow">Enquiries</p>
+
+              <a
+                href={enquiryHref}
+                className="display mt-5 block break-words text-[clamp(1.25rem,3vw,2.1rem)] text-bone underline-offset-[6px] transition-colors hover:text-champagne-bright hover:underline"
+              >
+                {siteConfig.contact.email}
+              </a>
+
+              <p className="mt-8 font-sans text-[0.9rem] leading-[1.85] text-bone-muted">
+                Include as much of the following as you can and we can usually
+                answer in a single reply.
               </p>
-            )}
-            <BookingForm />
+
+              <ul className="mt-6 space-y-3">
+                {bookingForm.enquiryPrompts.map((prompt) => (
+                  <li
+                    key={prompt}
+                    className="flex items-start gap-3 font-sans text-[0.85rem] leading-relaxed tracking-[0.04em] text-bone-muted"
+                  >
+                    <span
+                      aria-hidden="true"
+                      className="mt-2.5 h-px w-4 shrink-0 bg-champagne-deep"
+                    />
+                    {prompt}
+                  </li>
+                ))}
+              </ul>
+
+              <ButtonLink
+                href={enquiryHref}
+                variant="primary"
+                size="lg"
+                className="mt-10 w-full sm:w-auto"
+              >
+                Email your enquiry
+              </ButtonLink>
+            </div>
           </Reveal>
         </div>
       </div>

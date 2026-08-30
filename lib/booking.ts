@@ -1,7 +1,7 @@
 /**
  * Booking enquiry transport.
  *
- * The form component never talks to a provider directly — it calls
+ * The form component never talks to a provider directly. It calls
  * `submitEnquiry`, which resolves an adapter from environment configuration.
  * To go live, set the variables below in `.env.local`; no component changes
  * are required.
@@ -12,9 +12,8 @@
  *   NEXT_PUBLIC_BOOKING_PROVIDER=endpoint      // POSTs JSON to your own route
  *   NEXT_PUBLIC_BOOKING_ENDPOINT=/api/booking  // e.g. backed by Resend
  *
- * The default ("demo") performs no network request. It logs the payload and
- * resolves successfully so the interface can be exercised before a provider
- * is connected.
+ * With neither set, the form reports that it cannot take enquiries yet and
+ * points the visitor at the email address.
  */
 
 export interface BookingEnquiry {
@@ -35,6 +34,9 @@ export type BookingAdapter = (enquiry: BookingEnquiry) => Promise<BookingResult>
 
 const GENERIC_FAILURE =
   "Something went wrong sending your enquiry. Please try again, or email us directly.";
+
+const NO_PROVIDER =
+  "This form is not accepting enquiries yet. Please email us directly and we will come straight back to you.";
 
 const formspreeAdapter =
   (endpoint: string): BookingAdapter =>
@@ -68,12 +70,19 @@ const endpointAdapter =
     }
   };
 
-const demoAdapter: BookingAdapter = async (enquiry) => {
+/**
+ * Used until a provider is configured.
+ *
+ * This deliberately fails rather than resolving successfully. Reporting an
+ * enquiry as sent while discarding it is the worst outcome available: the
+ * visitor believes they have made contact and never follows up. Failing
+ * visibly keeps them pointed at the email address instead.
+ */
+const unconfiguredAdapter: BookingAdapter = async (enquiry) => {
   if (process.env.NODE_ENV !== "production") {
-    console.info("[booking] No provider configured. Enquiry payload:", enquiry);
+    console.warn("[booking] No provider configured. Enquiry not sent:", enquiry);
   }
-  await new Promise((resolve) => setTimeout(resolve, 900));
-  return { ok: true };
+  return { ok: false, error: NO_PROVIDER };
 };
 
 function resolveAdapter(): BookingAdapter {
@@ -83,19 +92,12 @@ function resolveAdapter(): BookingAdapter {
 
   if (provider === "formspree" && formspree) return formspreeAdapter(formspree);
   if (provider === "endpoint" && endpoint) return endpointAdapter(endpoint);
-  return demoAdapter;
+  return unconfiguredAdapter;
 }
 
 export function submitEnquiry(enquiry: BookingEnquiry): Promise<BookingResult> {
   return resolveAdapter()(enquiry);
 }
-
-/** True while the form is not wired to a real provider. */
-export const isBookingConfigured =
-  (process.env.NEXT_PUBLIC_BOOKING_PROVIDER === "formspree" &&
-    Boolean(process.env.NEXT_PUBLIC_FORMSPREE_ENDPOINT)) ||
-  (process.env.NEXT_PUBLIC_BOOKING_PROVIDER === "endpoint" &&
-    Boolean(process.env.NEXT_PUBLIC_BOOKING_ENDPOINT));
 
 // --- Validation -------------------------------------------------------------
 

@@ -3,7 +3,7 @@ import { SectionLabel } from "@/components/ui/SectionLabel";
 import { music } from "@/lib/content";
 
 /**
- * The song list is the artwork here — set as a poster bill rather than a grid
+ * The song list is the artwork here, set as a poster bill rather than a grid
  * of cards, alternating alignment down the page.
  */
 export function TheMusic() {

@@ -64,7 +64,7 @@ export function WatchTheShow() {
 
         <Reveal delay={160}>
           <p className="mt-6 font-sans text-[0.7rem] uppercase tracking-[0.24em] text-bone-faint">
-            {watch.captionPlaceholder}
+            {watch.caption}
           </p>
         </Reveal>
       </div>

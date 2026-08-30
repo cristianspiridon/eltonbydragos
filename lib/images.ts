@@ -38,14 +38,14 @@ function fromManifest(
 }
 
 export const photos = {
-  /** Widest framing of the set — the only frame showing hands on the keys. */
+  /** Widest framing of the set, and the only frame showing hands on the keys. */
   hero: fromManifest("hero-at-the-piano.jpg", {
     id: "hero",
     alt: `${"Dragoș"} performing as Elton John at the piano, wearing a top hat, round tinted glasses and a paisley stage jacket`,
     focus: "58% 22%",
     focusMobile: "56% 26%",
   }),
-  /** Most expressive frame — mid-note under blue and magenta stage light. */
+  /** Most expressive frame: mid-note under blue and magenta stage light. */
   midNote: fromManifest("mid-note.jpg", {
     id: "mid-note",
     alt: "Mid-song close-up of the performer singing into the microphone under blue stage light",
@@ -71,6 +71,30 @@ export const photos = {
     focus: "52% 40%",
   }),
 } satisfies Record<string, Photo>;
+
+/**
+ * Artist portrait for the biography.
+ *
+ * To supply a dedicated portrait, drop the file at `images/dragos-portrait.jpg`
+ * and run `npm run images`. It is picked up here automatically. Until then this
+ * falls back to the profile frame from the live set, so the layout is never
+ * missing an image.
+ */
+const portraitEntry = (manifest as Record<string, ManifestEntry | undefined>)[
+  "dragos-portrait.jpg"
+];
+
+export const portrait: Photo = portraitEntry
+  ? {
+      id: "portrait",
+      src: "/photos/dragos-portrait.jpg",
+      width: portraitEntry.width,
+      height: portraitEntry.height,
+      blurDataURL: portraitEntry.blurDataURL,
+      alt: "Portrait of Dragoș Moștenescu",
+      focus: "50% 30%",
+    }
+  : photos.profile;
 
 /** Ordered for the editorial gallery grid and the lightbox sequence. */
 export const galleryPhotos: Photo[] = [

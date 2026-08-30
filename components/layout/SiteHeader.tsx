@@ -64,7 +64,7 @@ export function SiteHeader() {
               wordmark text (WCAG 2.5.3), so it is extended rather than replaced. */}
           <Link href="/" className="shrink-0 transition-opacity duration-300 hover:opacity-80">
             <BrandMark />
-            <span className="sr-only"> — home</span>
+            <span className="sr-only">, home page</span>
           </Link>
 
           <nav aria-label="Primary" className="hidden lg:block">
@@ -73,7 +73,8 @@ export function SiteHeader() {
                 const isActive = active === item.href.replace("#", "");
                 return (
                   <li key={item.href}>
-                    <Link
+                    {/* Native anchor, not next/link: see ButtonLink. */}
+                    <a
                       href={item.href}
                       aria-current={isActive ? "true" : undefined}
                       className={[
@@ -89,7 +90,7 @@ export function SiteHeader() {
                           isActive ? "w-full" : "w-0 group-hover:w-full",
                         ].join(" ")}
                       />
-                    </Link>
+                    </a>
                   </li>
                 );
               })}

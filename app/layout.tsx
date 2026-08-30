@@ -7,12 +7,15 @@ import { MobileBookingBar } from "@/components/layout/MobileBookingBar";
 import { siteConfig } from "@/lib/site";
 
 /**
- * High-contrast Didone for display type — the West End poster voice.
- * Variable axis only, and latin alone: no display heading uses an extended
- * character, so the latin-ext file would be dead weight on the critical path.
+ * High-contrast Didone for display type, the West End poster voice.
+ *
+ * latin-ext is required, not optional: the biography sets "Dragoș Moștenescu"
+ * at display size and the comma-below S lives in that range. Splitting it into
+ * a separate unpreloaded instance was measured and came out slower, so the two
+ * subsets stay in one preloaded file.
  */
 const bodoni = Bodoni_Moda({
-  subsets: ["latin"],
+  subsets: ["latin", "latin-ext"],
   variable: "--font-bodoni",
   display: "swap",
 });
@@ -29,7 +32,7 @@ const description = `${siteConfig.brand.name} is a live Elton John tribute show 
 export const metadata: Metadata = {
   metadataBase: new URL(siteConfig.url),
   title: {
-    default: `${siteConfig.brand.name} — Elton John Tribute Show | UK Bookings`,
+    default: `${siteConfig.brand.name} | Elton John Tribute Show | UK Bookings`,
     template: `%s | ${siteConfig.brand.name}`,
   },
   description,
@@ -50,20 +53,20 @@ export const metadata: Metadata = {
     locale: "en_GB",
     url: siteConfig.url,
     siteName: siteConfig.brand.name,
-    title: `${siteConfig.brand.name} — ${siteConfig.brand.subtitle}`,
+    title: `${siteConfig.brand.name} | ${siteConfig.brand.subtitle}`,
     description,
     images: [
       {
         url: "/opengraph-image.jpg",
         width: 1200,
         height: 630,
-        alt: `${siteConfig.brand.name} — live Elton John tribute performance`,
+        alt: `Live performance photograph from ${siteConfig.brand.name}`,
       },
     ],
   },
   twitter: {
     card: "summary_large_image",
-    title: `${siteConfig.brand.name} — ${siteConfig.brand.subtitle}`,
+    title: `${siteConfig.brand.name} | ${siteConfig.brand.subtitle}`,
     description,
     images: ["/opengraph-image.jpg"],
   },
@@ -81,8 +84,8 @@ export const viewport: Viewport = {
 };
 
 /**
- * Structured data. Deliberately limited to facts supplied by the client —
- * no reviews, awards, venues or ratings are asserted.
+ * Structured data. Deliberately limited to facts supplied by the client.
+ * No reviews, awards, venues or ratings are asserted.
  */
 const structuredData = {
   "@context": "https://schema.org",

@@ -7,7 +7,7 @@ import type { Photo } from "@/lib/images";
 type DriftImageProps = {
   photo: Photo;
   sizes: string;
-  /** Applied to the clipping frame — set the aspect ratio here. */
+  /** Applied to the clipping frame. Set the aspect ratio here. */
   className?: string;
   /** Peak travel in pixels, in each direction. */
   amount?: number;
@@ -17,8 +17,8 @@ type DriftImageProps = {
 /**
  * Editorial image with a slow vertical drift as it crosses the viewport.
  *
- * The movement is deliberately small — a few dozen pixels across a full scroll
- * — so it reads as depth rather than parallax. It is skipped entirely under
+ * The movement is deliberately small, a few dozen pixels across a full scroll,
+ * so it reads as depth rather than parallax. It is skipped entirely under
  * `prefers-reduced-motion`, and while the frame is off screen.
  */
 export function DriftImage({

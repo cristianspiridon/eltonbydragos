@@ -13,7 +13,7 @@ const sizes: Record<Size, string> = {
 };
 
 const variants: Record<Variant, string> = {
-  /** Champagne fill — reserved for the single most important action in view. */
+  /** Champagne fill, reserved for the single most important action in view. */
   primary:
     "bg-champagne text-ink hover:bg-champagne-bright focus-visible:bg-champagne-bright",
   /** Hairline outline over photography. */
@@ -37,17 +37,38 @@ type SharedProps = {
   className?: string;
 };
 
-type ButtonLinkProps = SharedProps & ComponentPropsWithoutRef<typeof Link>;
+type ButtonLinkProps = SharedProps &
+  Omit<ComponentPropsWithoutRef<"a">, "className"> & { href: string };
 
+/**
+ * Renders a native anchor for anything that is not an internal route.
+ *
+ * next/link treats a click on the URL you are already at as a no-op, so once
+ * the address bar reads `#book`, pressing "Book the show" again does nothing.
+ * A plain anchor re-runs the browser's own scroll-to-fragment every time, which
+ * is the behaviour a visitor expects. Fragments and `mailto:` both take this
+ * path; only real routes go through next/link.
+ */
 export function ButtonLink({
   children,
   variant = "primary",
   size = "md",
   className,
+  href,
   ...props
 }: ButtonLinkProps) {
+  const classNames = classes(variant, size, className);
+
+  if (!href.startsWith("/")) {
+    return (
+      <a {...props} href={href} className={classNames}>
+        {children}
+      </a>
+    );
+  }
+
   return (
-    <Link {...props} className={classes(variant, size, className)}>
+    <Link {...props} href={href} className={classNames}>
       {children}
     </Link>
   );

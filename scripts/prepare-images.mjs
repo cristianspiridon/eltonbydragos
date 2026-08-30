@@ -7,6 +7,7 @@
  *
  * Run: npm run images
  */
+import { existsSync } from "node:fs";
 import { mkdir, writeFile } from "node:fs/promises";
 import path from "node:path";
 import sharp from "sharp";
@@ -27,6 +28,15 @@ const photos = [
   { src: "IMG 149.jpg", out: "into-the-microphone.jpg", width: WIDTH_STANDARD },
 ];
 
+/**
+ * Processed only if present. Drop a file at images/dragos-portrait.jpg and
+ * re-run this script, and the About section picks it up automatically;
+ * until then it falls back to the profile photograph from the live set.
+ */
+const optionalPhotos = [
+  { src: "dragos-portrait.jpg", out: "dragos-portrait.jpg", width: WIDTH_STANDARD },
+];
+
 /** Tiny blurred base64 placeholder so images fade in rather than pop. */
 async function blurDataUrl(file) {
   const buffer = await sharp(file)
@@ -36,22 +46,34 @@ async function blurDataUrl(file) {
   return `data:image/jpeg;base64,${buffer.toString("base64")}`;
 }
 
+async function process(photo, manifest) {
+  const from = path.join(SRC, photo.src);
+  const to = path.join(OUT, photo.out);
+
+  await sharp(from)
+    .resize({ width: photo.width, withoutEnlargement: true })
+    .jpeg({ quality: 82, mozjpeg: true, chromaSubsampling: "4:4:4" })
+    .toFile(to);
+
+  const { width, height } = await sharp(to).metadata();
+  manifest[photo.out] = { width, height, blurDataURL: await blurDataUrl(to) };
+  console.log(`✓ ${photo.src} → photos/${photo.out} (${width}x${height})`);
+}
+
 async function main() {
   await mkdir(OUT, { recursive: true });
   const manifest = {};
 
   for (const photo of photos) {
-    const from = path.join(SRC, photo.src);
-    const to = path.join(OUT, photo.out);
+    await process(photo, manifest);
+  }
 
-    await sharp(from)
-      .resize({ width: photo.width, withoutEnlargement: true })
-      .jpeg({ quality: 82, mozjpeg: true, chromaSubsampling: "4:4:4" })
-      .toFile(to);
-
-    const { width, height } = await sharp(to).metadata();
-    manifest[photo.out] = { width, height, blurDataURL: await blurDataUrl(to) };
-    console.log(`✓ ${photo.src} → photos/${photo.out} (${width}x${height})`);
+  for (const photo of optionalPhotos) {
+    if (!existsSync(path.join(SRC, photo.src))) {
+      console.log(`· ${photo.src} not supplied, skipping`);
+      continue;
+    }
+    await process(photo, manifest);
   }
 
   // Social card. Anchored high in the frame so the top hat survives the 1.91:1 crop.

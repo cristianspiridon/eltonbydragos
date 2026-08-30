@@ -1,12 +1,12 @@
-import Link from "next/link";
 import { BrandMark } from "./BrandMark";
 import { siteConfig } from "@/lib/site";
 
+/** Profiles without a URL yet are dropped rather than linked nowhere. */
 const socialLinks = [
-  { label: "Instagram", href: siteConfig.social.instagram, placeholder: true },
-  { label: "Facebook", href: siteConfig.social.facebook, placeholder: true },
-  { label: "YouTube", href: siteConfig.social.youtube, placeholder: false },
-];
+  { label: "Instagram", href: siteConfig.social.instagram },
+  { label: "Facebook", href: siteConfig.social.facebook },
+  { label: "YouTube", href: siteConfig.social.youtube },
+].filter((link): link is { label: string; href: string } => Boolean(link.href));
 
 export function SiteFooter() {
   return (
@@ -30,11 +30,6 @@ export function SiteFooter() {
                       className="font-sans text-sm tracking-[0.06em] text-bone-muted underline-offset-8 transition-colors hover:text-champagne-bright hover:underline"
                     >
                       {link.label}
-                      {link.placeholder && (
-                        <span className="ml-2 align-middle font-sans text-[0.55rem] uppercase tracking-[0.2em] text-champagne-deep">
-                          link to be supplied
-                        </span>
-                      )}
                     </a>
                   </li>
                 ))}
@@ -63,12 +58,13 @@ export function SiteFooter() {
                   </li>
                 )}
                 <li>
-                  <Link
+                  {/* Native anchor, not next/link: see ButtonLink. */}
+                  <a
                     href="#book"
                     className="font-sans text-sm tracking-[0.06em] text-bone-muted underline-offset-8 transition-colors hover:text-champagne-bright hover:underline"
                   >
-                    Enquiry form
-                  </Link>
+                    Check availability
+                  </a>
                 </li>
               </ul>
             </div>

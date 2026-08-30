@@ -1,6 +1,5 @@
 "use client";
 
-import Link from "next/link";
 import { useEffect, useState } from "react";
 import { siteConfig } from "@/lib/site";
 
@@ -47,13 +46,14 @@ export function MobileBookingBar() {
       ].join(" ")}
       aria-hidden={!visible}
     >
-      <Link
+      {/* Native anchor, not next/link: see ButtonLink. */}
+      <a
         href="#book"
         tabIndex={visible ? undefined : -1}
         className="flex w-full items-center justify-center bg-champagne px-6 py-4 font-sans text-xs font-semibold uppercase tracking-[0.22em] text-ink transition-colors duration-300 active:bg-champagne-bright"
       >
         {siteConfig.cta.primary}
-      </Link>
+      </a>
     </div>
   );
 }
