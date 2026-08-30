@@ -1,0 +1,74 @@
+/**
+ * Single source of truth for brand, contact and navigation.
+ *
+ * To rebrand the entire site, edit `brand` below — nothing else references the
+ * name directly. Values marked PLACEHOLDER must be replaced before launch.
+ */
+
+export const siteConfig = {
+  brand: {
+    /** Full wordmark, used in the header, footer, metadata and structured data. */
+    name: "Elton Live Experience",
+    /** Split form so the logo can set the two halves in different weights. */
+    nameLead: "Elton",
+    nameTrail: "Live Experience",
+    subtitle: "An Elton John Tribute Show",
+  },
+
+  performer: {
+    /** Stage/first name used in body copy. */
+    name: "Dragoș",
+  },
+
+  /** PLACEHOLDER — replace with the live domain. */
+  domain: "eltonliveexperience.co.uk",
+  url: "https://eltonliveexperience.co.uk",
+
+  contact: {
+    /** PLACEHOLDER — replace with the real booking inbox. */
+    email: "bookings@eltonliveexperience.co.uk",
+    /** PLACEHOLDER — set to a string to reveal a phone link in the footer. */
+    phone: null as string | null,
+    /** PLACEHOLDER — replace with the real base/travel statement. */
+    basedIn: "United Kingdom",
+  },
+
+  social: {
+    /** PLACEHOLDER — replace with the real profile URL. */
+    instagram: "https://instagram.com/",
+    /** PLACEHOLDER — replace with the real profile URL. */
+    facebook: "https://facebook.com/",
+    /** Verified from the supplied performance video. */
+    youtube: "https://www.youtube.com/@DragosMostenescu",
+  },
+
+  video: {
+    id: "rQxJrDgo4F4",
+    /** Seconds into the video to begin playback. */
+    startAt: 74,
+    title: "Tribute to Elton John — live performance",
+    poster: "/video/showreel-poster.jpg",
+  },
+
+  /** Ordered to match the scroll order of the page. */
+  nav: [
+    { label: "The Show", href: "#the-show" },
+    { label: "Video", href: "#video" },
+    { label: "About", href: "#about" },
+    { label: "Gallery", href: "#gallery" },
+    { label: "Book", href: "#book" },
+  ],
+
+  cta: {
+    primary: "Book the Show",
+    watch: "Watch the Show",
+    availability: "Check Availability",
+  },
+
+  disclaimer:
+    "This is an independent tribute production and is not affiliated with or endorsed by Elton John or his representatives.",
+} as const;
+
+export type SiteConfig = typeof siteConfig;
+
+export const mailtoBookings = `mailto:${siteConfig.contact.email}`;

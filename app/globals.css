@@ -1,0 +1,196 @@
+@import "tailwindcss";
+
+/* ---------------------------------------------------------------------------
+   Design tokens
+   Near-black stage, warm white type, champagne used only for accents.
+   All colour beyond these tokens comes from the photography itself.
+--------------------------------------------------------------------------- */
+
+@theme {
+  --color-ink: #08080a;
+  --color-ink-raised: #0d0d10;
+  --color-ink-deep: #050506;
+  --color-line: #23232a;
+  --color-line-soft: #17171c;
+
+  /* The two dimmest tones are tuned to clear 4.5:1 against --color-ink and
+     --color-ink-raised, since both carry small text. */
+  --color-bone: #f4efe6;
+  --color-bone-muted: #a29a8e;
+  --color-bone-faint: #857e71;
+
+  --color-champagne: #c9a96a;
+  --color-champagne-bright: #e7d3a8;
+  --color-champagne-deep: #937c45;
+
+  --font-display: var(--font-bodoni), "Didot", Georgia, serif;
+  --font-sans: var(--font-archivo), ui-sans-serif, system-ui, sans-serif;
+
+  --ease-stage: cubic-bezier(0.22, 1, 0.36, 1);
+
+  --animate-scroll-hint: scroll-hint 2.8s cubic-bezier(0.65, 0, 0.35, 1) infinite;
+  --animate-hero-settle: hero-settle 9s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+}
+
+/* House lights coming up: the hero frame settles from a slight push-in. */
+@keyframes hero-settle {
+  from {
+    transform: scale(1.09);
+  }
+  to {
+    transform: scale(1);
+  }
+}
+
+/* Curtain-up entrance for hero type, which reveals on load rather than scroll. */
+@keyframes fade-up {
+  from {
+    opacity: 0;
+    transform: translate3d(0, 2rem, 0);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@keyframes scroll-hint {
+  0% {
+    transform: scaleY(0);
+    transform-origin: top;
+  }
+  45% {
+    transform: scaleY(1);
+    transform-origin: top;
+  }
+  55% {
+    transform: scaleY(1);
+    transform-origin: bottom;
+  }
+  100% {
+    transform: scaleY(0);
+    transform-origin: bottom;
+  }
+}
+
+@layer base {
+  html {
+    scroll-behavior: smooth;
+    /* Clears the sticky header when jumping to an anchor. */
+    scroll-padding-top: 6rem;
+    -webkit-text-size-adjust: 100%;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    html {
+      scroll-behavior: auto;
+    }
+  }
+
+  body {
+    background-color: var(--color-ink);
+    color: var(--color-bone);
+    font-family: var(--font-sans);
+    font-synthesis-weight: none;
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+  }
+
+  ::selection {
+    background-color: var(--color-champagne);
+    color: var(--color-ink);
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--color-champagne-bright);
+    outline-offset: 3px;
+  }
+
+  /* Native date/select controls default to a light UI on dark backgrounds. */
+  input[type="date"]::-webkit-calendar-picker-indicator {
+    filter: invert(1) sepia(0.3) saturate(3) hue-rotate(2deg);
+    opacity: 0.5;
+    cursor: pointer;
+  }
+
+  input[type="date"]::-webkit-calendar-picker-indicator:hover {
+    opacity: 0.9;
+  }
+}
+
+@layer components {
+  /* Editorial display type: high-contrast Didone, set tight and large. */
+  .display {
+    font-family: var(--font-display);
+    font-weight: 500;
+    line-height: 0.92;
+    letter-spacing: -0.015em;
+    font-optical-sizing: auto;
+  }
+
+  /* Small-caps eyebrow used to open every section. */
+  .eyebrow {
+    font-size: 0.6875rem;
+    font-weight: 500;
+    letter-spacing: 0.32em;
+    text-transform: uppercase;
+    color: var(--color-champagne);
+  }
+
+  /* Hairline rule that reads as a printed rule rather than a border. */
+  .rule {
+    border: 0;
+    height: 1px;
+    background: linear-gradient(
+      to right,
+      var(--color-line) 0%,
+      var(--color-line) 60%,
+      transparent 100%
+    );
+  }
+}
+
+/* ---------------------------------------------------------------------------
+   Scroll reveals
+
+   `scripting: enabled` gates the hidden state on JavaScript being available to
+   undo it, so the page stays fully readable without it. Browsers that don't
+   support the feature query simply render everything visible and unanimated,
+   which is the same safe outcome.
+--------------------------------------------------------------------------- */
+
+@media (prefers-reduced-motion: no-preference) and (scripting: enabled) {
+  [data-reveal] {
+    opacity: 0;
+    transform: translate3d(0, 1.75rem, 0);
+    transition:
+      opacity 1s var(--ease-stage),
+      transform 1s var(--ease-stage);
+    transition-delay: var(--reveal-delay, 0ms);
+    will-change: opacity, transform;
+  }
+
+  [data-reveal="shown"] {
+    opacity: 1;
+    transform: none;
+  }
+
+  /* Slow drift applied to editorial images as they pass through the viewport.
+     The overscale absorbs the travel so no edge is ever exposed. */
+  [data-drift] {
+    transform: translate3d(0, var(--drift, 0px), 0) scale(1.12);
+    will-change: transform;
+  }
+}
+
+/* Film-grain veil. Sits above the photography, below all content. */
+.grain::after {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: 60;
+  pointer-events: none;
+  opacity: 0.035;
+  mix-blend-mode: overlay;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+}
