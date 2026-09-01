@@ -98,10 +98,22 @@ export function Hero() {
           <div
             className="mt-9 flex flex-col gap-3 opacity-0 motion-safe:animate-[fade-up_1.1s_var(--ease-stage)_0.92s_forwards] motion-reduce:opacity-100 sm:mt-11 sm:flex-row sm:gap-4"
           >
-            <ButtonLink href="#video" variant="ghost" size="lg">
+            {/* Scrolls to the video section rather than opening YouTube, so
+                this is navigation. The play button reports the video click. */}
+            <ButtonLink
+              href="#video"
+              variant="ghost"
+              size="lg"
+              event={{ name: "Navigation Click", destination: "video", location: "hero" }}
+            >
               {siteConfig.cta.watch}
             </ButtonLink>
-            <ButtonLink href="#book" variant="primary" size="lg">
+            <ButtonLink
+              href="#book"
+              variant="primary"
+              size="lg"
+              event={{ name: "Booking Click", location: "hero", method: "anchor" }}
+            >
               {siteConfig.cta.primary}
             </ButtonLink>
           </div>

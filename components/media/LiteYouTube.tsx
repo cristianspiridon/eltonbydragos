@@ -2,6 +2,7 @@
 
 import Image from "next/image";
 import { useState } from "react";
+import { trackEvent } from "@/lib/analytics";
 
 type LiteYouTubeProps = {
   videoId: string;
@@ -54,7 +55,14 @@ export function LiteYouTube({ videoId, title, poster, startAt = 0 }: LiteYouTube
       ) : (
         <button
           type="button"
-          onClick={() => setActivated(true)}
+          onClick={() => {
+            trackEvent({
+              name: "Performance Video Click",
+              location: "video-section",
+              destination: "youtube",
+            });
+            setActivated(true);
+          }}
           onPointerEnter={() => setWarmed(true)}
           onFocus={() => setWarmed(true)}
           className="group absolute inset-0 h-full w-full cursor-pointer"

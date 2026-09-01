@@ -52,7 +52,12 @@ export function BookingCta() {
 
         <Reveal delay={200}>
           <div className="mt-10 flex justify-center">
-            <ButtonLink href="#book" variant="primary" size="lg">
+            <ButtonLink
+              href="#book"
+              variant="primary"
+              size="lg"
+              event={{ name: "Booking Click", location: "booking-cta", method: "anchor" }}
+            >
               {siteConfig.cta.availability}
             </ButtonLink>
           </div>

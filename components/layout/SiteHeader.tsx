@@ -5,6 +5,7 @@ import { useEffect, useState } from "react";
 import { BrandMark } from "./BrandMark";
 import { MobileMenu } from "./MobileMenu";
 import { ButtonLink } from "@/components/ui/Button";
+import { trackNavItem } from "@/lib/analytics";
 import { siteConfig } from "@/lib/site";
 
 const sectionIds = siteConfig.nav.map((item) => item.href.replace("#", ""));
@@ -76,6 +77,7 @@ export function SiteHeader() {
                     {/* Native anchor, not next/link: see ButtonLink. */}
                     <a
                       href={item.href}
+                      onClick={() => trackNavItem(item.href, "header")}
                       aria-current={isActive ? "true" : undefined}
                       className={[
                         "group relative block py-2 font-sans text-[0.7rem] font-medium uppercase tracking-[0.24em] transition-colors duration-300",
@@ -101,7 +103,11 @@ export function SiteHeader() {
             {/* Wrapper carries the responsive visibility: the button sets its own
                 display, which would otherwise win over a `hidden` utility. */}
             <span className="hidden lg:block">
-              <ButtonLink href="#book" variant="primary">
+              <ButtonLink
+                href="#book"
+                variant="primary"
+                event={{ name: "Booking Click", location: "header", method: "anchor" }}
+              >
                 {siteConfig.cta.primary}
               </ButtonLink>
             </span>

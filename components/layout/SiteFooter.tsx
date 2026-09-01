@@ -1,12 +1,16 @@
 import { BrandMark } from "./BrandMark";
+import { TrackedLink } from "@/components/analytics/TrackedLink";
 import { siteConfig } from "@/lib/site";
 
 /** Profiles without a URL yet are dropped rather than linked nowhere. */
 const socialLinks = [
-  { label: "Instagram", href: siteConfig.social.instagram },
-  { label: "Facebook", href: siteConfig.social.facebook },
-  { label: "YouTube", href: siteConfig.social.youtube },
-].filter((link): link is { label: string; href: string } => Boolean(link.href));
+  { label: "Instagram", platform: "instagram", href: siteConfig.social.instagram },
+  { label: "Facebook", platform: "facebook", href: siteConfig.social.facebook },
+  { label: "YouTube", platform: "youtube", href: siteConfig.social.youtube },
+].filter(
+  (link): link is { label: string; platform: "instagram" | "facebook" | "youtube"; href: string } =>
+    Boolean(link.href),
+);
 
 export function SiteFooter() {
   return (
@@ -23,17 +27,22 @@ export function SiteFooter() {
               <ul className="mt-5 space-y-3">
                 {socialLinks.map((link) => (
                   <li key={link.label}>
-                    <a
+                    <TrackedLink
                       href={link.href}
                       target="_blank"
                       rel="noopener noreferrer"
+                      event={{
+                        name: "Social Click",
+                        platform: link.platform,
+                        location: "footer",
+                      }}
                       className="font-sans text-sm tracking-[0.06em] text-bone-muted underline-offset-8 transition-colors hover:text-champagne-bright hover:underline"
                     >
                       {link.label}
                       {/* Visible text stays first, so the accessible name still
                           starts with the label (WCAG 2.5.3). */}
                       <span className="sr-only"> (opens in a new tab)</span>
-                    </a>
+                    </TrackedLink>
                   </li>
                 ))}
               </ul>
@@ -43,31 +52,34 @@ export function SiteFooter() {
               <h2 className="eyebrow">Bookings</h2>
               <ul className="mt-5 space-y-3">
                 <li>
-                  <a
+                  <TrackedLink
                     href={`mailto:${siteConfig.contact.email}`}
+                    event={{ name: "Contact Click", location: "footer", method: "email" }}
                     className="font-sans text-sm tracking-[0.06em] text-bone underline-offset-8 transition-colors hover:text-champagne-bright hover:underline"
                   >
                     {siteConfig.contact.email}
-                  </a>
+                  </TrackedLink>
                 </li>
                 {siteConfig.contact.phone && (
                   <li>
-                    <a
+                    <TrackedLink
                       href={`tel:${siteConfig.contact.phone.replace(/\s/g, "")}`}
+                      event={{ name: "Contact Click", location: "footer", method: "phone" }}
                       className="font-sans text-sm tracking-[0.06em] text-bone-muted transition-colors hover:text-champagne-bright"
                     >
                       {siteConfig.contact.phone}
-                    </a>
+                    </TrackedLink>
                   </li>
                 )}
                 <li>
                   {/* Native anchor, not next/link: see ButtonLink. */}
-                  <a
+                  <TrackedLink
                     href="#book"
+                    event={{ name: "Booking Click", location: "footer", method: "anchor" }}
                     className="font-sans text-sm tracking-[0.06em] text-bone-muted underline-offset-8 transition-colors hover:text-champagne-bright hover:underline"
                   >
                     Check availability
-                  </a>
+                  </TrackedLink>
                 </li>
               </ul>
             </div>

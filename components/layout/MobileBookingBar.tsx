@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { trackEvent } from "@/lib/analytics";
 import { siteConfig } from "@/lib/site";
 
 /**
@@ -49,6 +50,13 @@ export function MobileBookingBar() {
       {/* Native anchor, not next/link: see ButtonLink. */}
       <a
         href="#book"
+        onClick={() =>
+          trackEvent({
+            name: "Booking Click",
+            location: "mobile-bar",
+            method: "anchor",
+          })
+        }
         tabIndex={visible ? undefined : -1}
         className="flex w-full items-center justify-center bg-champagne px-6 py-4 font-sans text-xs font-semibold uppercase tracking-[0.22em] text-ink transition-colors duration-300 active:bg-champagne-bright"
       >

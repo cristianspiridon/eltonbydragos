@@ -1,5 +1,7 @@
 import Link from "next/link";
 import type { ComponentPropsWithoutRef, ReactNode } from "react";
+import { TrackedLink } from "@/components/analytics/TrackedLink";
+import type { AnalyticsEvent } from "@/lib/analytics";
 
 type Variant = "primary" | "ghost" | "quiet";
 type Size = "md" | "lg";
@@ -38,7 +40,11 @@ type SharedProps = {
 };
 
 type ButtonLinkProps = SharedProps &
-  Omit<ComponentPropsWithoutRef<"a">, "className"> & { href: string };
+  Omit<ComponentPropsWithoutRef<"a">, "className"> & {
+    href: string;
+    /** Supply to report the click. Omit and this stays a server component. */
+    event?: AnalyticsEvent;
+  };
 
 /**
  * Renders a native anchor for anything that is not an internal route.
@@ -48,6 +54,10 @@ type ButtonLinkProps = SharedProps &
  * A plain anchor re-runs the browser's own scroll-to-fragment every time, which
  * is the behaviour a visitor expects. Fragments and `mailto:` both take this
  * path; only real routes go through next/link.
+ *
+ * When `event` is set the anchor is delegated to TrackedLink. That keeps this
+ * module a server component: only the leaf anchor crosses into the client
+ * bundle, and the markup and classes are identical either way.
  */
 export function ButtonLink({
   children,
@@ -55,9 +65,18 @@ export function ButtonLink({
   size = "md",
   className,
   href,
+  event,
   ...props
 }: ButtonLinkProps) {
   const classNames = classes(variant, size, className);
+
+  if (event) {
+    return (
+      <TrackedLink {...props} href={href} event={event} className={classNames}>
+        {children}
+      </TrackedLink>
+    );
+  }
 
   if (!href.startsWith("/")) {
     return (

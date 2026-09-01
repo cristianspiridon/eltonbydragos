@@ -2,6 +2,7 @@
 
 import { useEffect, useRef } from "react";
 import { ButtonLink } from "@/components/ui/Button";
+import { trackEvent, trackNavItem } from "@/lib/analytics";
 import { siteConfig } from "@/lib/site";
 
 type MobileMenuProps = {
@@ -92,7 +93,10 @@ export function MobileMenu({ open, onClose, active }: MobileMenuProps) {
                 {/* Native anchor, not next/link: see ButtonLink. */}
                 <a
                   href={item.href}
-                  onClick={onClose}
+                  onClick={() => {
+                    trackNavItem(item.href, "mobile-menu");
+                    onClose();
+                  }}
                   aria-current={isActive ? "true" : undefined}
                   className="flex items-baseline gap-5 py-5"
                 >
@@ -121,11 +125,19 @@ export function MobileMenu({ open, onClose, active }: MobileMenuProps) {
           size="lg"
           onClick={onClose}
           className="w-full"
+          event={{ name: "Booking Click", location: "mobile-menu", method: "anchor" }}
         >
           {siteConfig.cta.primary}
         </ButtonLink>
         <a
           href={`mailto:${siteConfig.contact.email}`}
+          onClick={() =>
+            trackEvent({
+              name: "Contact Click",
+              location: "mobile-menu",
+              method: "email",
+            })
+          }
           className="mt-5 block text-center font-sans text-[0.7rem] tracking-[0.16em] text-bone-muted underline-offset-8 hover:text-champagne-bright hover:underline"
         >
           {siteConfig.contact.email}

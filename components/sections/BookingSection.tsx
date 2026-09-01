@@ -1,3 +1,4 @@
+import { TrackedLink } from "@/components/analytics/TrackedLink";
 import { ButtonLink } from "@/components/ui/Button";
 import { Reveal } from "@/components/ui/Reveal";
 import { SectionLabel } from "@/components/ui/SectionLabel";
@@ -68,12 +69,17 @@ export function BookingSection() {
                 one line at every width. 6.4cqi leaves a little headroom for the
                 fallback face before the webfont loads.
               */}
-              <a
+              <TrackedLink
                 href={enquiryHref}
+                event={{
+                  name: "Contact Click",
+                  location: "booking-section",
+                  method: "email",
+                }}
                 className="display mt-5 block whitespace-nowrap text-[min(6.4cqi,2.1rem)] text-bone underline-offset-[6px] transition-colors hover:text-champagne-bright hover:underline"
               >
                 {siteConfig.contact.email}
-              </a>
+              </TrackedLink>
 
               <p className="mt-8 font-sans text-[0.9rem] leading-[1.85] text-bone-muted">
                 Include as much of the following as you can and we can usually
@@ -100,6 +106,11 @@ export function BookingSection() {
                 variant="primary"
                 size="lg"
                 className="mt-10 w-full sm:w-auto"
+                event={{
+                  name: "Contact Click",
+                  location: "booking-section",
+                  method: "email",
+                }}
               >
                 Email your enquiry
               </ButtonLink>
