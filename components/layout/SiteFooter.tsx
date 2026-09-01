@@ -30,6 +30,9 @@ export function SiteFooter() {
                       className="font-sans text-sm tracking-[0.06em] text-bone-muted underline-offset-8 transition-colors hover:text-champagne-bright hover:underline"
                     >
                       {link.label}
+                      {/* Visible text stays first, so the accessible name still
+                          starts with the label (WCAG 2.5.3). */}
+                      <span className="sr-only"> (opens in a new tab)</span>
                     </a>
                   </li>
                 ))}

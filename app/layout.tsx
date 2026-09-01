@@ -1,10 +1,12 @@
 import type { Metadata, Viewport } from "next";
+import { Analytics } from "@vercel/analytics/next";
 import { Archivo, Bodoni_Moda } from "next/font/google";
 import "./globals.css";
 import { SiteHeader } from "@/components/layout/SiteHeader";
 import { SiteFooter } from "@/components/layout/SiteFooter";
 import { MobileBookingBar } from "@/components/layout/MobileBookingBar";
 import { siteConfig } from "@/lib/site";
+import { about as biography } from "@/lib/content";
 
 /**
  * High-contrast Didone for display type, the West End poster voice.
@@ -83,25 +85,38 @@ export const viewport: Viewport = {
   colorScheme: "dark",
 };
 
+/** Stable node identifiers. Every cross-reference below points at one of these. */
+const id = {
+  website: `${siteConfig.url}/#website`,
+  act: `${siteConfig.url}/#elton-live-experience`,
+  performer: `${siteConfig.url}/#dragos`,
+  showreel: `${siteConfig.url}/#showreel`,
+} as const;
+
 /**
- * Structured data. Deliberately limited to facts supplied by the client.
- * No reviews, awards, venues or ratings are asserted.
+ * Structured data. Deliberately limited to facts already published on the
+ * page. No reviews, awards, ratings, venues, prices or event dates.
+ *
+ * The four nodes are joined by @id rather than repeated inline, so a crawler
+ * that reads any one of them can resolve the rest, and the act and performer
+ * are described exactly once each.
  */
 const structuredData = {
   "@context": "https://schema.org",
   "@graph": [
     {
       "@type": "WebSite",
-      "@id": `${siteConfig.url}/#website`,
+      "@id": id.website,
       url: siteConfig.url,
       name: siteConfig.brand.name,
       description,
       inLanguage: "en-GB",
-      publisher: { "@id": `${siteConfig.url}/#act` },
+      publisher: { "@id": id.act },
+      about: { "@id": id.act },
     },
     {
       "@type": "MusicGroup",
-      "@id": `${siteConfig.url}/#act`,
+      "@id": id.act,
       name: siteConfig.brand.name,
       alternateName: siteConfig.brand.subtitle,
       description,
@@ -117,13 +132,40 @@ const structuredData = {
         siteConfig.social.instagram,
         siteConfig.social.facebook,
       ].filter((url): url is string => Boolean(url)),
-      member: { "@type": "Person", name: siteConfig.performer.name },
+      member: { "@id": id.performer },
+      subjectOf: { "@id": id.showreel },
       makesOffer: [
         "Theatre and venue performances",
         "Festival performances",
         "Wedding and celebration performances",
         "Corporate and private event performances",
       ].map((name) => ({ "@type": "Offer", itemOffered: { "@type": "Service", name } })),
+    },
+    {
+      "@type": "Person",
+      "@id": id.performer,
+      name: biography.name,
+      alternateName: siteConfig.performer.name,
+      description: biography.lead,
+      memberOf: { "@id": id.act },
+    },
+    {
+      /**
+       * The real performance video. No uploadDate: the genuine date is not
+       * recorded anywhere in this project, and Google would rather have the
+       * field missing than invented. Supply it here once it is known, since
+       * video rich results require it.
+       */
+      "@type": "VideoObject",
+      "@id": id.showreel,
+      name: siteConfig.video.title,
+      description: `Live performance footage of ${biography.name} performing the music of Elton John as ${siteConfig.brand.name}.`,
+      // Self-hosted poster frame, already shipped for the click-to-play facade.
+      thumbnailUrl: `${siteConfig.url}${siteConfig.video.poster}`,
+      // The privacy-preserving player the page actually embeds.
+      embedUrl: `https://www.youtube-nocookie.com/embed/${siteConfig.video.id}`,
+      url: `https://www.youtube.com/watch?v=${siteConfig.video.id}`,
+      about: { "@id": id.act },
     },
   ],
 };
@@ -143,6 +185,16 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <main>{children}</main>
         <SiteFooter />
         <MobileBookingBar />
+
+        {/* Vercel Web Analytics. Mounted once here so it covers every route. */}
+        <Analytics />
+
+        {/*
+          Points AI agents at the plain-Markdown summary of the site.
+          "describedby" is an IANA-registered link relation, and React hoists
+          the tag into <head>, so no manual head management is needed.
+        */}
+        <link rel="describedby" href="/llms.txt" />
 
         <script
           type="application/ld+json"
