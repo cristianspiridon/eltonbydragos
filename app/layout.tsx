@@ -110,7 +110,13 @@ const structuredData = {
       genre: ["Pop", "Rock", "Tribute"],
       areaServed: { "@type": "Country", name: "United Kingdom" },
       email: siteConfig.contact.email,
-      sameAs: [siteConfig.social.youtube],
+      // Only real profiles. Instagram and Facebook are still null in the
+      // config, so they drop out here and reappear once they are filled in.
+      sameAs: [
+        siteConfig.social.youtube,
+        siteConfig.social.instagram,
+        siteConfig.social.facebook,
+      ].filter((url): url is string => Boolean(url)),
       member: { "@type": "Person", name: siteConfig.performer.name },
       makesOffer: [
         "Theatre and venue performances",
