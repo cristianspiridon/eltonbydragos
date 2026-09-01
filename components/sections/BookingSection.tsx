@@ -57,12 +57,20 @@ export function BookingSection() {
           </div>
 
           <Reveal delay={120} className="lg:col-span-6 lg:col-start-7">
-            <div className="border border-line p-8 sm:p-10">
+            <div className="@container border border-line p-8 sm:p-10">
               <p className="eyebrow">Enquiries</p>
 
+              {/*
+                The address must never break across two lines. In the display
+                face it renders at a steady 14.6x its font size, so sizing it
+                against the panel's own width (rather than the viewport, which
+                the panel stops tracking once the grid splits at lg) keeps it on
+                one line at every width. 6.4cqi leaves a little headroom for the
+                fallback face before the webfont loads.
+              */}
               <a
                 href={enquiryHref}
-                className="display mt-5 block break-words text-[clamp(1.25rem,3vw,2.1rem)] text-bone underline-offset-[6px] transition-colors hover:text-champagne-bright hover:underline"
+                className="display mt-5 block whitespace-nowrap text-[min(6.4cqi,2.1rem)] text-bone underline-offset-[6px] transition-colors hover:text-champagne-bright hover:underline"
               >
                 {siteConfig.contact.email}
               </a>
