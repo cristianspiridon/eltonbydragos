@@ -125,7 +125,7 @@ export function MobileMenu({ open, onClose, active }: MobileMenuProps) {
           size="lg"
           onClick={onClose}
           className="w-full"
-          event={{ name: "Booking Click", location: "mobile-menu", method: "anchor" }}
+          event={{ name: "booking_click", location: "mobile-menu", method: "anchor" }}
         >
           {siteConfig.cta.primary}
         </ButtonLink>
@@ -133,7 +133,7 @@ export function MobileMenu({ open, onClose, active }: MobileMenuProps) {
           href={`mailto:${siteConfig.contact.email}`}
           onClick={() =>
             trackEvent({
-              name: "Contact Click",
+              name: "contact_click",
               location: "mobile-menu",
               method: "email",
             })

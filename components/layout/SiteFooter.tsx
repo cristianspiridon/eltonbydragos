@@ -32,7 +32,7 @@ export function SiteFooter() {
                       target="_blank"
                       rel="noopener noreferrer"
                       event={{
-                        name: "Social Click",
+                        name: "social_click",
                         platform: link.platform,
                         location: "footer",
                       }}
@@ -54,7 +54,7 @@ export function SiteFooter() {
                 <li>
                   <TrackedLink
                     href={`mailto:${siteConfig.contact.email}`}
-                    event={{ name: "Contact Click", location: "footer", method: "email" }}
+                    event={{ name: "contact_click", location: "footer", method: "email" }}
                     className="font-sans text-sm tracking-[0.06em] text-bone underline-offset-8 transition-colors hover:text-champagne-bright hover:underline"
                   >
                     {siteConfig.contact.email}
@@ -64,7 +64,7 @@ export function SiteFooter() {
                   <li>
                     <TrackedLink
                       href={`tel:${siteConfig.contact.phone.replace(/\s/g, "")}`}
-                      event={{ name: "Contact Click", location: "footer", method: "phone" }}
+                      event={{ name: "contact_click", location: "footer", method: "phone" }}
                       className="font-sans text-sm tracking-[0.06em] text-bone-muted transition-colors hover:text-champagne-bright"
                     >
                       {siteConfig.contact.phone}
@@ -75,7 +75,7 @@ export function SiteFooter() {
                   {/* Native anchor, not next/link: see ButtonLink. */}
                   <TrackedLink
                     href="#book"
-                    event={{ name: "Booking Click", location: "footer", method: "anchor" }}
+                    event={{ name: "booking_click", location: "footer", method: "anchor" }}
                     className="font-sans text-sm tracking-[0.06em] text-bone-muted underline-offset-8 transition-colors hover:text-champagne-bright hover:underline"
                   >
                     Check availability

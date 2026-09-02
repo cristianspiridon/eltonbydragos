@@ -56,7 +56,7 @@ export function BookingCta() {
               href="#book"
               variant="primary"
               size="lg"
-              event={{ name: "Booking Click", location: "booking-cta", method: "anchor" }}
+              event={{ name: "booking_click", location: "booking-cta", method: "anchor" }}
             >
               {siteConfig.cta.availability}
             </ButtonLink>

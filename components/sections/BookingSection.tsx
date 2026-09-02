@@ -72,7 +72,7 @@ export function BookingSection() {
               <TrackedLink
                 href={enquiryHref}
                 event={{
-                  name: "Contact Click",
+                  name: "contact_click",
                   location: "booking-section",
                   method: "email",
                 }}
@@ -107,7 +107,7 @@ export function BookingSection() {
                 size="lg"
                 className="mt-10 w-full sm:w-auto"
                 event={{
-                  name: "Contact Click",
+                  name: "contact_click",
                   location: "booking-section",
                   method: "email",
                 }}

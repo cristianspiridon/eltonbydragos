@@ -57,7 +57,7 @@ export function LiteYouTube({ videoId, title, poster, startAt = 0 }: LiteYouTube
           type="button"
           onClick={() => {
             trackEvent({
-              name: "Performance Video Click",
+              name: "performance_video_click",
               location: "video-section",
               destination: "youtube",
             });

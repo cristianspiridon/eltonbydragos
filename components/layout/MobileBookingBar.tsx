@@ -52,7 +52,7 @@ export function MobileBookingBar() {
         href="#book"
         onClick={() =>
           trackEvent({
-            name: "Booking Click",
+            name: "booking_click",
             location: "mobile-bar",
             method: "anchor",
           })

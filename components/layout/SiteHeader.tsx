@@ -106,7 +106,7 @@ export function SiteHeader() {
               <ButtonLink
                 href="#book"
                 variant="primary"
-                event={{ name: "Booking Click", location: "header", method: "anchor" }}
+                event={{ name: "booking_click", location: "header", method: "anchor" }}
               >
                 {siteConfig.cta.primary}
               </ButtonLink>

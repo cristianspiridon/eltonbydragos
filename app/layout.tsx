@@ -1,7 +1,7 @@
 import type { Metadata, Viewport } from "next";
-import { Analytics } from "@vercel/analytics/next";
 import { Archivo, Bodoni_Moda } from "next/font/google";
 import "./globals.css";
+import { FirebaseAnalytics } from "@/components/analytics/FirebaseAnalytics";
 import { SiteHeader } from "@/components/layout/SiteHeader";
 import { SiteFooter } from "@/components/layout/SiteFooter";
 import { MobileBookingBar } from "@/components/layout/MobileBookingBar";
@@ -186,8 +186,9 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <SiteFooter />
         <MobileBookingBar />
 
-        {/* Vercel Web Analytics. Mounted once here so it covers every route. */}
-        <Analytics />
+        {/* Google Analytics via Firebase. Mounted once here so it covers
+            every route, and so the automatic page_view fires exactly once. */}
+        <FirebaseAnalytics />
 
         {/*
           Points AI agents at the plain-Markdown summary of the site.

@@ -104,7 +104,7 @@ export function Hero() {
               href="#video"
               variant="ghost"
               size="lg"
-              event={{ name: "Navigation Click", destination: "video", location: "hero" }}
+              event={{ name: "navigation_click", destination: "video", location: "hero" }}
             >
               {siteConfig.cta.watch}
             </ButtonLink>
@@ -112,7 +112,7 @@ export function Hero() {
               href="#book"
               variant="primary"
               size="lg"
-              event={{ name: "Booking Click", location: "hero", method: "anchor" }}
+              event={{ name: "booking_click", location: "hero", method: "anchor" }}
             >
               {siteConfig.cta.primary}
             </ButtonLink>

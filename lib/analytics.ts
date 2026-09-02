@@ -1,23 +1,25 @@
-import { track } from "@vercel/analytics";
+import { logEvent } from "firebase/analytics";
+import { analyticsReady } from "./firebase";
 
 /**
- * Custom event schema for Vercel Web Analytics.
+ * Custom event schema for Google Analytics (Firebase).
  *
- * Two rules shape everything below.
+ * Three rules shape everything below.
  *
  * No personal data can reach analytics. Every property is a closed union of
  * literal strings, so there is no way to pass an email address, a name, a
  * phone number, free-text form input or a query string through this helper.
  * Widening any of these to `string` would remove that guarantee.
  *
- * Every event carries exactly two properties, because Vercel caps custom
- * events at two properties on Pro. Adding a third would silently lose data,
- * so the types keep the limit visible at the call site.
+ * Names are snake_case because GA4 accepts only letters, digits and
+ * underscores in an event name, must start with a letter, and truncates past
+ * 40 characters. A name with a space in it is rejected rather than corrected,
+ * so these read exactly as they will appear in the GA4 reports.
  *
  * One user action fires one event. Where an interaction could plausibly match
  * two events, it is assigned to the more specific one: a click on a booking
- * anchor is a Booking Click rather than a Navigation Click, and a mailto is a
- * Contact Click rather than a second Booking Click.
+ * anchor is a booking_click rather than a navigation_click, and a mailto is a
+ * contact_click rather than a second booking_click.
  */
 
 /** Anything that scrolls the visitor to the booking panel. */
@@ -32,44 +34,52 @@ type BookingLocation =
 /** Anywhere a real contact channel is opened. */
 type ContactLocation = "booking-section" | "footer" | "mobile-menu";
 
-/** Section ids from siteConfig.nav, minus "book" which is a Booking Click. */
+/** Section ids from siteConfig.nav, minus "book" which is a booking_click. */
 type NavDestination = "the-show" | "video" | "about" | "gallery";
 
 export type AnalyticsEvent =
   | {
-      name: "Booking Click";
+      name: "booking_click";
       location: BookingLocation;
       /** Only "anchor" today. A restored form would add "form" here. */
       method: "anchor";
     }
   | {
-      name: "Contact Click";
+      name: "contact_click";
       location: ContactLocation;
       method: "email" | "phone";
     }
   | {
-      name: "Performance Video Click";
+      name: "performance_video_click";
       location: "video-section";
       destination: "youtube";
     }
   | {
-      name: "Social Click";
+      name: "social_click";
       platform: "youtube" | "instagram" | "facebook";
       location: "footer";
     }
   | {
-      name: "Navigation Click";
+      name: "navigation_click";
       destination: NavDestination;
       location: "header" | "mobile-menu" | "hero";
     };
 
 /**
- * Fire and forget. track() never throws and never blocks navigation, so a
- * click handler can call this immediately before the browser follows the link.
+ * Fire and forget.
+ *
+ * The await never delays the click. Analytics is resolved once on load, so by
+ * the time anyone can press a link the promise has already settled, and the
+ * browser follows the href on the same tick either way. Failures are swallowed
+ * upstream in analyticsReady, so a blocked measurement script costs the
+ * visitor nothing.
  */
 export function trackEvent(event: AnalyticsEvent): void {
-  const { name, ...properties } = event;
-  track(name, properties);
+  const { name, ...params } = event;
+
+  void analyticsReady().then((analytics) => {
+    if (analytics) logEvent(analytics, name, params);
+  });
 }
 
 const NAV_DESTINATIONS: readonly NavDestination[] = [
@@ -98,11 +108,11 @@ export function trackNavItem(
   const target = href.replace("#", "");
 
   if (target === "book") {
-    trackEvent({ name: "Booking Click", location, method: "anchor" });
+    trackEvent({ name: "booking_click", location, method: "anchor" });
     return;
   }
 
   if (isNavDestination(target)) {
-    trackEvent({ name: "Navigation Click", destination: target, location });
+    trackEvent({ name: "navigation_click", destination: target, location });
   }
 }
