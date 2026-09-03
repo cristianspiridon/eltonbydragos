@@ -150,16 +150,12 @@ const structuredData = {
       memberOf: { "@id": id.act },
     },
     {
-      /**
-       * The real performance video. No uploadDate: the genuine date is not
-       * recorded anywhere in this project, and Google would rather have the
-       * field missing than invented. Supply it here once it is known, since
-       * video rich results require it.
-       */
       "@type": "VideoObject",
       "@id": id.showreel,
       name: siteConfig.video.title,
       description: `Live performance footage of ${biography.name} performing the music of Elton John as ${siteConfig.brand.name}.`,
+      uploadDate: siteConfig.video.uploadDate,
+      duration: siteConfig.video.duration,
       // Self-hosted poster frame, already shipped for the click-to-play facade.
       thumbnailUrl: `${siteConfig.url}${siteConfig.video.poster}`,
       // The privacy-preserving player the page actually embeds.

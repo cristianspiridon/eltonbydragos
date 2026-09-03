@@ -50,6 +50,14 @@ export const siteConfig = {
     startAt: 74,
     title: "Tribute to Elton John, live performance",
     poster: "/video/showreel-poster.jpg",
+    /**
+     * Taken from YouTube's own metadata for this video, offset included.
+     * Google treats uploadDate as required for video rich results, so a guess
+     * here would be worse than the field being absent.
+     */
+    uploadDate: "2016-09-08T01:32:31-07:00",
+    /** ISO 8601 form of the 639 seconds YouTube reports. */
+    duration: "PT10M39S",
   },
 
   /** Ordered to match the scroll order of the page. */
